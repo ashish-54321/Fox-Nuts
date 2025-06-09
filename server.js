@@ -8,11 +8,11 @@ connectDB();
 
 const app = express();
 
-// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-app.use(cors({ origin: "https://nutritionalnuts.netlify.app", credentials: true }));
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/email', require('./routes/emailRoutes.js'));
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

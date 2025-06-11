@@ -9,7 +9,8 @@ connectDB();
 
 const app = express();
 // Enable Express to trust X-Forwarded-For header (for real client IP)
-app.set('trust proxy', true);
+// Trust the first proxy (safe for most deployments)
+app.set('trust proxy', 1);
 
 // const origin = 'http://localhost:5173'
 const origin = 'https://nutritionalnuts.netlify.app'

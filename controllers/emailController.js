@@ -1,14 +1,35 @@
 const nodemailer = require("nodemailer");
 const User = require('../models/User');
 const Otp = require("../models/Otp.js");
+const { OtpLimit, FormLimit } = require("../models/Limit");
+
 
 exports.send = async (req, res) => {
     const { name, email, phone, quantity, address, type, message } = req.body;
 
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
     // CheckPoint
-    if (!name || !email || !phone || !quantity || !address || !type || !message) {
+    if (!name || !email || !phone || !quantity || !address || !type || !message || !ip) {
         return res.status(400).send({ message: "All fields are required." });
     }
+
+    // Check Rate Limit
+    const rateLimit = await FormLimit.findOne({ ip });
+    if (rateLimit) {
+        if (rateLimit.count >= 20) {
+            return res.status(429).json({ message: "You exceeded the limit. Try again after 24 hours." });
+        }
+
+        // Increment count
+        rateLimit.count += 1;
+        await rateLimit.save();
+    } else {
+        // Create new limit document
+        const newrateLimit = new FormLimit({ ip, count: 1 });
+        await newrateLimit.save();
+    }
+
 
     let transporter = nodemailer.createTransport({
         host: "smtpout.secureserver.net",
@@ -45,7 +66,6 @@ exports.send = async (req, res) => {
     }
 };
 
-
 exports.sendOtp = async (req, res) => {
     const { email } = req.body;
 
@@ -55,6 +75,22 @@ exports.sendOtp = async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
+
+    // Check Rate Limit
+    const rateLimit = await OtpLimit.findOne({ email });
+    if (rateLimit) {
+        if (rateLimit.count >= 3) {
+            return res.status(429).json({ message: "You exceeded the OTP limit. Try again after 24 hours." });
+        }
+
+        // Increment count
+        rateLimit.count += 1;
+        await rateLimit.save();
+    } else {
+        // Create new limit document
+        const newrateLimit = new OtpLimit({ email, count: 1 });
+        await newrateLimit.save();
+    }
 
     // Generate 6-digit OTP
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -107,9 +143,6 @@ exports.sendOtp = async (req, res) => {
     }
 };
 
-
-
-
 exports.resetOtp = async (req, res) => {
     const { email } = req.body;
 
@@ -119,6 +152,22 @@ exports.resetOtp = async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) return res.status(400).json({ message: "This Email Not Register" });
+
+    // Check Rate Limit
+    const rateLimit = await OtpLimit.findOne({ email });
+    if (rateLimit) {
+        if (rateLimit.count >= 3) {
+            return res.status(429).json({ message: "You exceeded the OTP limit. Try again after 24 hours." });
+        }
+
+        // Increment count
+        rateLimit.count += 1;
+        await rateLimit.save();
+    } else {
+        // Create new limit document
+        const newrateLimit = new OtpLimit({ email, count: 1 });
+        await newrateLimit.save();
+    }
 
     // Generate 6-digit OTP
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();

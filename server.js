@@ -8,6 +8,8 @@ dotenv.config();
 connectDB();
 
 const app = express();
+// Enable Express to trust X-Forwarded-For header (for real client IP)
+app.set('trust proxy', true);
 
 // const origin = 'http://localhost:5173'
 const origin = 'https://nutritionalnuts.netlify.app'

@@ -17,7 +17,7 @@ exports.send = async (req, res) => {
     // Check Rate Limit
     const rateLimit = await FormLimit.findOne({ ip });
     if (rateLimit) {
-        if (rateLimit.count >= 20) {
+        if (rateLimit.count >= 2) {
             return res.status(429).json({ message: "You exceeded the limit. Try again after 24 hours." });
         }
 

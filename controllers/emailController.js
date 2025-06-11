@@ -7,7 +7,17 @@ const { OtpLimit, FormLimit } = require("../models/Limit");
 exports.send = async (req, res) => {
     const { name, email, phone, quantity, address, type, message } = req.body;
 
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const forwarded = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    let ip = '';
+    if (typeof forwarded === 'string') {
+        const ipList = forwarded.split(',').map(ip => ip.trim());
+        ip = `${ipList[0]} ${ipList[ipList.length - 1]}`
+    } else {
+        // fallback for direct IP
+        ip = `${forwarded}`;
+    }
+
 
     // CheckPoint
     if (!name || !email || !phone || !quantity || !address || !type || !message || !ip) {

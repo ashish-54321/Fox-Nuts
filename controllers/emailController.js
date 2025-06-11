@@ -12,7 +12,7 @@ exports.send = async (req, res) => {
     let ip = '';
     if (typeof forwarded === 'string') {
         const ipList = forwarded.split(',').map(ip => ip.trim());
-        ip = `${ipList[0]} ${ipList[ipList.length - 1]}`
+        ip = `${ipList[0]}`
     } else {
         // fallback for direct IP
         ip = `${forwarded}`;

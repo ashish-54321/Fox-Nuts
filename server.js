@@ -13,7 +13,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 // const origin = 'http://localhost:5173'
-const origin = 'https://nutritionalnuts.netlify.app'
+const origin = 'https://polite-toffee-80cd72.netlify.app'
 
 // CORS configuration
 app.use(cors({

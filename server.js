@@ -35,6 +35,10 @@ app.use(limiter);
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.send("Api's Now Live By Ashish Tiwari");
+});
+
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/email', require('./routes/emailRoutes.js'));
 

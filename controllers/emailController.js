@@ -125,7 +125,7 @@ exports.sendOtp = async (req, res) => {
             subject: "Your OTP Code",
             html: `
             <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #f9f9f9;">
-            <h2 style="color: #2c3e50; text-align: center;">🔐 Email Verification</h2>
+            <h2 style="color: #2c3e50; text-align: center;">Email Verification</h2>
             <p style="font-size: 16px; color: #333;">Dear User,</p>
             <p style="font-size: 16px; color: #333;">
             Thank you for using <strong>Nutritional Nuts</strong>. To continue, please use the OTP below to verify your email address.

@@ -13,7 +13,10 @@ const app = express();
 app.set('trust proxy', 1);
 
 // const origin = 'http://localhost:5173'
-const origin = 'https://nutritionalnuts.com'
+const origin = [
+  "https://nutritionalnuts.com",
+  "https://testingfoxnuts.netlify.app"
+];
 
 // CORS configuration
 app.use(cors({
@@ -44,3 +47,4 @@ app.use('/api/email', require('./routes/emailRoutes.js'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

@@ -5,9 +5,9 @@ const Otp = require("../models/Otp.js");
 
 exports.signup = async (req, res) => {
     try {
-        const { fullName, email, password, otp } = req.body;
+        const { fullName, email, password, otp, phone } = req.body;
 
-        if (!email || !fullName || !password || !otp) {
+        if (!email || !fullName || !password || !otp || !phone) {
             return res.status(400).json({ message: "Missing Required Details" });
         }
 
@@ -26,7 +26,7 @@ exports.signup = async (req, res) => {
 
         // Continue registration process
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ fullName, email, password: hashedPassword });
+        const newUser = new User({ fullName, email, phone, password: hashedPassword });
         await newUser.save();
 
         // ✅ Single response only
@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-        res.status(200).json({ token, user: { fullName: user.fullName, email: user.email } });
+        res.status(200).json({ token, user: { fullName: user.fullName, email: user.email, id: user._id } });
     } catch (error) {
         res.status(500).json({ message: "Login failed", error });
     }

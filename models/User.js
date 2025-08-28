@@ -18,9 +18,9 @@ const addressSchema = new mongoose.Schema({
     address: { type: String, required: true },
     landmark: { type: String },
     phone: { type: String },
-    location: {
-        type: [Number], // [lat, lng]
-        default: []
+   location: {
+        lat: { type: Number },
+        lng: { type: Number }
     }
 }, { _id: true });
 
@@ -39,3 +39,4 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);
+

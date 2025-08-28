@@ -18,6 +18,11 @@ const origin = [
     "https://testingfoxnuts.netlify.app"
 ];
 
+app.get('/ping', (req, res) => {
+    res.status(200).json({ message: 'Ashish API Alive!' });
+});
+
+
 // CORS configuration
 app.use(cors({
     origin: origin, // Replace with your domain(s)
@@ -38,6 +43,17 @@ app.use(limiter);
 
 app.use(express.json());
 
+function delay(minutes) {
+    return new Promise(resolve => setTimeout(resolve, minutes * 60 * 1000));
+}
+
+async function keepAlive() {
+    const speek = await axios.get(`https://fox-nuts-pf8f.onrender.com/ping`)
+    console.log(speek.data);
+    await delay(11);
+    keepAlive();
+}
+
 // Root Route
 app.get("/", (req, res) => {
     res.send("Api's Now Live By Ashish Tiwari");
@@ -53,4 +69,8 @@ app.use("/api/address", require('./routes/addressRoutes.js'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// End Of Backend Code...
+keepAlive();
+
 
